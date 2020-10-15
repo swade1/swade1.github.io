@@ -1,0 +1,145 @@
+---
+title: "ES Markdown Document"
+author: "Susan Wade"
+date: "10/15/2020"
+output: ioslides_presentation
+slidy_presentation: default
+always_allow_html: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(elastic)
+library(plotly)
+library(shiny)
+library(shinydashboard)
+library(ggplot2)
+library(DT)
+```
+
+```{r elastic-setup, echo=FALSE}
+x_put <- connect(headers=list("Content-Type"="application/json"))
+x_search <- connect()
+```
+
+## R Markdown
+
+This is a test to see if I can use Elastic queries in a GitHub pages presentation. 
+
+
+```{r elastic-query, echo=FALSE, warning=FALSE,comment=""}
+cars <- Search(x_search,index="old_cars",body='{"_source":["make","model"],"query":{"match_all":{}}}',size=12)$hits$hits
+nColumns <- length(unlist(cars[[1]]))
+nNames <- names(unlist(cars[[1]]))
+cars.df <- data.frame(matrix(unlist(cars),ncol=nColumns,byrow=TRUE))
+cars.df <- cars.df[c(5,6)]
+names(cars.df) <- c("model","make")
+cars.df
+
+
+```
+
+## Slide with Plot
+
+```{r cars,comment="",echo=FALSE,warning=FALSE}
+cars.df %>%
+  plot_ly() %>%
+  add_histogram(x = ~model)
+
+```
+
+
+## Interactive Shiny Content
+```{r shiny-app, comment="", echo=FALSE, warning=FALSE}
+ui <- dashboardPage(
+
+  dashboardHeader(
+    title = "Dashboard View"), #dashboard header
+  dashboardSidebar(width = 150,
+
+                   #sidebar menu
+                   sidebarMenu(
+                     menuItem("Upload File",
+                              tabName = "upload",
+                              icon=icon("arrow-circle-up",
+                                        lib="font-awesome")
+                     )
+                   )
+  ),
+
+  dashboardBody(
+    tabItems(
+      tabItem(
+        tabName = "upload",
+        sidebarPanel(
+          fileInput(inputId="file",
+                    label="Choose a CSV file to upload",
+                    accept = c("csv",".csv")),
+          checkboxInput(inputId = "dataheader",
+                        label="File has header?",
+                        value = TRUE),
+          uiOutput(outputId = "colX"),
+          uiOutput(outputId = "colY")
+        ),
+
+        mainPanel(
+          tabsetPanel(type="tabs",
+                      tabPanel("Data",DT::dataTableOutput("showData")),
+                      tabPanel("Summary",verbatimTextOutput("showSummary")),
+                      tabPanel("Plot",plotlyOutput("showPlot")))
+        )
+      )
+    )
+  )
+)
+server <- function(input, output, session) {
+
+  columns <- reactiveVal()
+
+  rawdata <- reactive({
+    uploaded <- input$file
+    if(is.null(uploaded)) {
+      return()
+    }
+    read.csv(file = uploaded$datapath,
+             header = input$dataheader)
+
+  })
+
+  output$showData <- DT::renderDataTable(
+    rawdata(),
+    options = list(
+      pageLength = 10,
+      scrollY = "400px"
+    )
+
+  )
+
+  output$showSummary <- renderPrint(summary(rawdata()))
+
+
+  observe(columns(colnames(Filter(is.numeric,rawdata()))))
+
+  output$colX <- renderUI({
+    selectInput(inputId = "xAxis",
+                label = "Select X Axis:",
+                choices = columns())
+  })
+
+  output$colY <- renderUI({
+    selectInput(inputId = "yAxis",
+                label = "Select Y Axis:",
+                choices = columns())
+
+  })
+  output$showPlot <- renderPlotly({
+    g <- ggplot(rawdata(), aes_string(x=input$xAxis,y=input$yAxis)) +
+      geom_point(colour = "blue") +
+      theme_bw()
+    ggplotly(g)
+  })
+}
+
+shinyApp(ui = ui, server = server)
+```
+
