@@ -1,0 +1,77 @@
+---
+title: "Basketball Stats for Famous Players"
+subtitle: "2005-2014"
+date: "10/17/2020"
+runtime: shiny
+output: 
+  ioslides_presentation:
+    logo: basketballplayer.png
+  slidy_presentation: default
+always_allow_html: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(knitr)
+library(magrittr)
+library(shiny)
+library(ggplot2)
+library(plotly)
+library(DT)
+```
+
+## Basketball Player Comparisons
+This Shiny app allows the user to compare 10 famous American basketball players between the years of 2005-2014. These 10 players include:   
+
+[add players here]
+
+```{r echo=FALSE,results='asis'}
+#library(knitr)
+#library(kable)
+#knitr::kable(Players.df[,2:3],col.names=c("",""))
+```
+
+Players can be compared on the basis of Salary, Games played, Minutes played, and Points scored. 
+
+## How to use the Shiny App
+
+To compare players, select a comparison parameter from the drop down box. The line chart will automatically update that parameter for each player for each year. 
+
+## Kobe Bryant's Stats (2005-2014)
+
+```{r player-comparison, echo = FALSE}
+#seasons <- c("2005","2006","2007","2008","2009","2010","2011","2012","2013","2014")
+player_data <- read.csv("playerstats_kobe.csv",colClasses=c("numeric","numeric","numeric","numeric"))
+
+ui <- fluidPage(
+  #titlePanel("Basketball Player Comparison"),
+  fluidRow(
+    column(4,selectInput("selected_parameter","Parameter", choices=c("Salary","Games","Minutes","Points")))
+  ),
+  fluidRow(
+    column(8,plotOutput("annual_plot"))
+  )
+)
+
+server <- function(input,output,session) {
+  annual_results <- reactive({
+    years.df <- data.frame(year=c(2005:2014))
+    pd <- player_data[,input$selected_parameter]
+    ar <- cbind(years.df,pd)
+    print(ar)
+  })
+  
+  output$annual_plot <- renderPlot({
+    ggplot(annual_results(), aes(x=year,y=pd)) +
+      geom_line() +
+      labs(x= "Years",y="")
+  })
+}
+shinyApp(ui,server,session)
+```
+
+## Links and Thanks
+
+```{r pressure}
+plot(pressure)
+```
