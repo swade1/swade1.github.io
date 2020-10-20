@@ -24,7 +24,7 @@ x_search <- connect()
 
 ## R Markdown
 
-This is a test to see if I can use Elastic queries in a GitHub pages presentation. 
+This is a test to see if I can use Elastic queries in a GitHub pages presentation. (and the answer is NO. GitHub pages do not support dynamic content)
 
 
 ```{r elastic-query, echo=FALSE, warning=FALSE,comment=""}

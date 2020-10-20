@@ -1,13 +1,11 @@
 ---
-title: "Basketball Stats for Famous Players"
+title: "Basketball Stats for Kobe Bryant"
 subtitle: "2005-2014"
 date: "10/17/2020"
-runtime: shiny
 output: 
   ioslides_presentation:
     logo: basketballplayer.png
-  slidy_presentation: default
-always_allow_html: yes
+runtime: shiny
 ---
 
 ```{r setup, include=FALSE}
@@ -15,55 +13,60 @@ knitr::opts_chunk$set(echo = FALSE)
 library(knitr)
 library(magrittr)
 library(shiny)
+library(tidyverse)
 library(ggplot2)
 library(plotly)
-library(DT)
 ```
 
-## Basketball Player Comparisons
-This Shiny app allows the user to compare 10 famous American basketball players between the years of 2005-2014. These 10 players include:   
+## Overview and Data Description
+This Shiny app allows users to explore a few common stats for American basketball player, Kobe Bryant. These stats include:
 
-[add players here]
+- Kobe's salary each year
+- The number of games Kobe played each year
+- The number of minutes Kobe played each year
+- The number of points Kobe scored each year
 
-```{r echo=FALSE,results='asis'}
-#library(knitr)
-#library(kable)
-#knitr::kable(Players.df[,2:3],col.names=c("",""))
-```
-
-Players can be compared on the basis of Salary, Games played, Minutes played, and Points scored. 
+Although Kobe's playing career spanned 20 years from 1996-2016, the stats here only cover 2005-2014.
 
 ## How to use the Shiny App
 
-To compare players, select a comparison parameter from the drop down box. The line chart will automatically update that parameter for each player for each year. 
+- Select a statistic from the drop down box to view a line chart of values for that statistic over the time period.    
+
+- The default value of the line chart is 'Salary' with the line graph showing how much Kobe earned each year.  
+
+- Select a different statistic to view corresponding values over time.  
+
+- **To advance to the next slide, click to the right of the slide on the black border**
 
 ## Kobe Bryant's Stats (2005-2014)
 
 ```{r player-comparison, echo = FALSE}
-#seasons <- c("2005","2006","2007","2008","2009","2010","2011","2012","2013","2014")
 player_data <- read.csv("playerstats_kobe.csv",colClasses=c("numeric","numeric","numeric","numeric"))
 
 ui <- fluidPage(
-  #titlePanel("Basketball Player Comparison"),
   fluidRow(
-    column(4,selectInput("selected_parameter","Parameter", choices=c("Salary","Games","Minutes","Points")))
+    column(4,
+            selectInput("selected_parameter",
+              "Select Statistic",    
+              choices=c("Salary","Games","Minutes","Points")
+            )
+          )
   ),
   fluidRow(
     column(8,plotOutput("annual_plot"))
   )
 )
-
 server <- function(input,output,session) {
   annual_results <- reactive({
     years.df <- data.frame(year=c(2005:2014))
     pd <- player_data[,input$selected_parameter]
     ar <- cbind(years.df,pd)
-    print(ar)
   })
-  
   output$annual_plot <- renderPlot({
     ggplot(annual_results(), aes(x=year,y=pd)) +
       geom_line() +
+      scale_y_continuous(labels = scales::label_comma()) +
+      scale_x_continuous(breaks = 2005:2014) + 
       labs(x= "Years",y="")
   })
 }
@@ -72,6 +75,8 @@ shinyApp(ui,server,session)
 
 ## Links and Thanks
 
-```{r pressure}
-plot(pressure)
-```
+[Kobe Bryant Basketball Statistics](https://www.basketball-reference.com/players/b/bryanko01.html)  
+
+[Kobe Bryant Biography - Wikipedia](https://en.wikipedia.org/wiki/Kobe_Bryant)
+
+
