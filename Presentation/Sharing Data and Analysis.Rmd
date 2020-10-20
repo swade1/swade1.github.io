@@ -58,7 +58,7 @@ Share documentation, code, analysis results, visualizations, and discussion cont
 ## GitLab Pages
 
 - GitLab Pages can be used to host a website based on GitLab repo contents
-- [GitHub Pages Example](https://swade1.github.io)
+- [GitHub Pages Example](https://swade1.github.io/Week2/index.html)
 - [GitHub Pages Slide Show Example](https://swade1.github.io/Week3/Week3Assignment.html#1)
 
 - _This works well for static content but dynamic content is not supported_
@@ -89,6 +89,7 @@ Shiny app content can be hosted on an RStudio Linux server that approved users c
 - Runs on all platforms  
 - Users need not download R, R packages, RStudio, etc. 
 - Can be configured to include Elastic and pre-populated indices  
+- Users can run Shiny apps locally
 
 ## Links and Resources
 - [Shiny Documentation](shiny.rstudio.com)
