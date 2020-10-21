@@ -25,13 +25,23 @@ Share documentation, code, analysis results, visualizations, and discussion cont
 
 
 ## What Kind of Data Analysis and Results are we Talking About?
+Documentation, text, code, and interactive apps written in RMarkdown and combined into html, pdf, or slide format.
 <center>
-![](RStudioScreenshot.png)  
-</center>  
+<br>
+![](RStudioScreenshot.png)
+<br>
+</center>
 
-## The Output  
+## Document Introduction 
+<br><br>
+<center>
+![](mti-analysis-start.png)
+</center>
+
+## Interactive Shiny App in the same document
 <center>  
 ![](mti-analysis.png)
+
 </center>  
 
 ## Why not just use Kibana?
