@@ -19,9 +19,9 @@ library(plotly)
 ## Diamonds categorized by cut
 
 ```{r diamonds, comment=""}
-
-diamonds %>%
-  plot_ly() %>% 
-  add_histogram(x = ~cut)
+plot_ly(diamonds, x = ~cut, color = ~clarity, colors = "Accent")
+#diamonds %>%
+#  plot_ly() %>% 
+#  add_histogram(x = ~cut)
 ```
 
