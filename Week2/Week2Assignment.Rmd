@@ -16,7 +16,7 @@ library(leaflet)
 #free and apparently unlimited lat/long finder:
 #https://www.latlongfinder.net/
 beerIcon <- makeIcon(
-iconUrl = "http://www.brewingwithbriess.com/Recipes/Assets/Images/beer-images/lager-beer-glass-dark.png", iconWidth = 15*215/230, iconHeight = 31,
+iconUrl = "https://www.brewingwithbriess.com/recipes/assets/images/beer-images/lager-beer-glass-dark.png", iconWidth = 15, iconHeight = 20,
 iconAnchorX = 31*215/230/2, iconAnchorY = 16
 )
 beerSites <- c(
